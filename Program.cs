@@ -24,10 +24,6 @@ namespace dialektor
                 SetProcessDPIAware();
 
 
-
-
-
-
             //var teacher = new SequentialMinimalOptimization<Gaussian>()
             //{
             //    UseComplexityHeuristic = true,
@@ -47,25 +43,26 @@ namespace dialektor
             //ScatterplotBox.Show("Expected results", inputs, outputs);
             //ScatterplotBox.Show("GaussianSVM results", inputs, zeroOneAnswers);
 
-            while (true) { Console.ReadKey(true); }
+            while (true)
+            {
+                Console.ReadKey(true);
+            }
         }
 
-        public static (int[][] mfcc_inputs, bool[] classes) getData()
+        public static (double[][] mfcc_inputs, bool[] classes) getData()
         {
-            var i = 0;
-            int[][] inputs;
+            List<double[]> input = new List<double[]>();
+            List<bool> classes = new List<bool>();
             String[] files = Directory.GetFiles("DATA");
             foreach (String file in files)
             {
-                var mfcc = getMFCC(file);
-                inputs[i] = mfcc;
-                classes[i] = file.Split('_')[2] == "0" ? false : true;
-                i++;
+                input.Add(getMFCC(file));
+                classes.Add(file.Split('_')[2] != "0");
             }
-            return (inputs, classes);
+            return (input.ToArray(), classes.ToArray());
         }
 
-        public static int[] getMFCC(string file)
+        public static double[] getMFCC(string file)
         {
             WaveDecoder decoder = new WaveDecoder(file);
             Signal signal = decoder.Decode();
@@ -77,5 +74,4 @@ namespace dialektor
         [System.Runtime.InteropServices.DllImport("user32.dll")]
         private static extern bool SetProcessDPIAware();
     }
-
 }
