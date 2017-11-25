@@ -23,30 +23,42 @@ namespace dialektor
             if (Environment.OSVersion.Version.Major >= 6)
                 SetProcessDPIAware();
 
+            var tuple = getData();
 
-            //var teacher = new SequentialMinimalOptimization<Gaussian>()
-            //{
-            //    UseComplexityHeuristic = true,
-            //    UseKernelEstimation = true // estimate the kernel from the data
-            //};
+            double[][] data_train_x = new double[(int)(tuple.mfcc_inputs.Length * 0.66)][];
+            double[][] data_test_x = new double[(int)(tuple.mfcc_inputs.Length * 0.33)][];
 
-            //// Teach the vector machine
-            //var svm = teacher.Learn(inputs, outputs);
+            bool[] data_train_y = new bool[(int)(tuple.classes.Length * 0.66)];
+            bool[] data_test_y = new bool[(int)(tuple.classes.Length * 0.33)];
 
-            //// Classify the samples using the model
-            //bool[] answers = svm.Decide(inputs);
+            Array.Copy(tuple.mfcc_inputs, 0, data_train_x, 0, (int)(tuple.mfcc_inputs.Length * 0.66));
+            Array.Copy(tuple.mfcc_inputs, 0, data_test_x, (int)(tuple.mfcc_inputs.Length * 0.66), tuple.mfcc_inputs.Length);
 
-            //// Convert to Int32 so we can plot:
-            //int[] zeroOneAnswers = answers.ToZeroOne();
+            Array.Copy(tuple.classes, 0, data_train_y, 0, (int)(tuple.classes.Length * 0.66));
+            Array.Copy(tuple.classes, 0, data_test_y, (int)(tuple.classes.Length * 0.66), tuple.classes.Length);
 
-            //// Plot the results
-            //ScatterplotBox.Show("Expected results", inputs, outputs);
-            //ScatterplotBox.Show("GaussianSVM results", inputs, zeroOneAnswers);
+            Console.WriteLine("Training dimension: (" + data_train_x.Length + ", " + data_train_y.Length + ")");
+            Console.WriteLine("Test dimension: (" + data_test_x.Length + ", " + data_test_y.Length + ")");
 
-            while (true)
+            var teacher = new SequentialMinimalOptimization<Gaussian>()
             {
-                Console.ReadKey(true);
-            }
+                UseComplexityHeuristic = true,
+                UseKernelEstimation = true // estimate the kernel from the data
+            };
+
+            // Teach the vector machine
+            var svm = teacher.Learn(data_train_x, data_train_y);
+
+            // Classify the samples using the model
+            bool[] prediction = svm.Decide(data_test_x);
+
+            int matches = 0;
+            for (int i = 0; i < prediction.Length; i++)
+                if (prediction[i] == data_test_y[i]) matches++;
+
+            Console.WriteLine("Similarity: " + (prediction.Length / matches));
+
+            while (true) { Console.ReadKey(true); }
         }
 
         public static (double[][] mfcc_inputs, bool[] classes) getData()
