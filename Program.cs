@@ -50,9 +50,19 @@ namespace dialektor
             while (true) { Console.ReadKey(true); }
         }
 
-        public static (int[], int) getData()
+        public static (int[][] mfcc_inputs, bool[] classes) getData()
         {
+            var i = 0;
+            int[][] mfcc_inputs;
             String[] files = Directory.GetFiles("DATA");
+            foreach (String file in files)
+            {
+                var mfcc = getMFCC(file);
+                mfcc_inputs[i] = mfcc;
+                classes[i] = file.Split('_')[2] == "0" ? false : true;
+                i++;
+            }
+            return (mfcc_inputs, classes);
         }
 
         public static int[] getMFCC(string file)
