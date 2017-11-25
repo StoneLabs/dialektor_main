@@ -81,16 +81,23 @@ namespace dialektor
             return (from input in data select network.Compute(input)).ToArray();
         }
 
-
+        
         public static (double[][] mfcc_inputs, bool[] classes) GetData()
         {
             List<double[]> input = new List<double[]>();
             List<bool> classes = new List<bool>();
             String[] files = Directory.GetFiles("DATA");
+            
+            int count = files.Length;
+            int current = 0;
             foreach (String file in files)
             {
                 input.Add(GetMfcc(file));
                 classes.Add(file.Split('_')[2] != "0");
+                
+                current++;
+                if (current % 50 == 0)
+                    Console.WriteLine("Reading data... " + (current / count * 100) + "%");
             }
             return (input.ToArray(), classes.ToArray());
         }
