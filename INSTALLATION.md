@@ -6,3 +6,4 @@ The easiest way to get started is through NuGet:
     PM> Install-Package Accord.Controls
 	PM> Install-Package Accord.Audio
 	PM> Install-Package Accord.DirectSound
+	PM> Install-Package Accord.Neuro
