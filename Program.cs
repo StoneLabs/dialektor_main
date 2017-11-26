@@ -24,6 +24,14 @@ namespace dialektor
             bool[] dataTrainY = new bool[(int) (tuple.classes.Length * 0.66)];
             bool[] dataTestY = new bool[(int) (tuple.classes.Length * 0.33)];
 
+            Console.WriteLine("Loaded datasets (x): " + tuple.mfcc_inputs.Length);
+            Console.WriteLine("Loaded datasets (y): " + tuple.classes.Length);
+            
+            Console.WriteLine("MFCC dimension: " + tuple.mfcc_inputs[0].Length);
+            
+            Console.WriteLine("Coefficient 1: " + (int) (tuple.mfcc_inputs.Length * 0.66));
+            Console.WriteLine("Coefficient 2: " + (int) (tuple.mfcc_inputs.Length * 0.33));
+
             Array.Copy(tuple.mfcc_inputs, 0, dataTrainX, 0, (int) (tuple.mfcc_inputs.Length * 0.66));
             Array.Copy(tuple.mfcc_inputs, 0, dataTestX, (int) (tuple.mfcc_inputs.Length * 0.66),
                 tuple.mfcc_inputs.Length);
