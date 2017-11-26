@@ -34,10 +34,10 @@ namespace dialektor
 
             Array.Copy(tuple.mfcc_inputs, 0, dataTrainX, 0, (int) (tuple.mfcc_inputs.Length * 0.66));
             Array.Copy(tuple.mfcc_inputs, 0, dataTestX, (int) (tuple.mfcc_inputs.Length * 0.66),
-                tuple.mfcc_inputs.Length);
+                tuple.mfcc_inputs.Length - 1);
 
             Array.Copy(tuple.classes, 0, dataTrainY, 0, (int) (tuple.classes.Length * 0.66));
-            Array.Copy(tuple.classes, 0, dataTestY, (int) (tuple.classes.Length * 0.66), tuple.classes.Length);
+            Array.Copy(tuple.classes, 0, dataTestY, (int) (tuple.classes.Length * 0.66), tuple.classes.Length - 1);
 
             Console.WriteLine("Training dimension: (" + dataTrainX.Length + ", " + dataTrainY.Length + ")");
             Console.WriteLine("Test dimension: (" + dataTestX.Length + ", " + dataTestY.Length + ")");
@@ -96,7 +96,7 @@ namespace dialektor
             List<bool> classes = new List<bool>();
             String[] files = Directory.GetFiles("DATA");
             
-            int count = files.Length;
+            float count = files.Length;
             int current = 0;
             foreach (String file in files)
             {
@@ -104,7 +104,7 @@ namespace dialektor
                 classes.Add(file.Split('_')[2] != "0");
                 
                 current++;
-                if (current % 50 == 0)
+                if (current % 1 == 0)
                     Console.WriteLine("Reading data... " + (current / count * 100) + "%");
             }
             return (input.ToArray(), classes.ToArray());
